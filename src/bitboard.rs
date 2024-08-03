@@ -40,6 +40,14 @@ impl Bitboard {
     pub fn west_one(&self) -> Bitboard {
         Self(&self.0 >> 1) & !Self::H_FILE
     }
+
+    pub fn rank(&self) -> u64 {
+        (&self.0.ilog2() / 8).into()
+    }
+
+    pub fn file(&self) -> u64 {
+        (self.0.ilog2() % 8).into()
+    }
 }
 
 // BIT OPERATIONS :
@@ -205,7 +213,7 @@ impl Bitboard {
 }
 
 
-// TESTS
+// TEST
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -231,5 +239,21 @@ mod tests {
         assert_eq!(Square::H5.bb().east_one(), Bitboard::EMPTY);
         assert_eq!(Square::D1.bb().sout_one(), Bitboard::EMPTY);
         assert_eq!(Square::A2.bb().west_one(), Bitboard::EMPTY);
+    }
+    
+    #[test]
+    fn test_rank() {
+        assert_eq!(Square::A8.rank(), 0);
+        assert_eq!(Square::F7.rank(), 1);
+        assert_eq!(Square::E4.rank(), 4);
+        assert_eq!(Square::C1.rank(), 7);
+    }
+
+    #[test]
+    fn test_file() {
+        assert_eq!(Square::A8.file(), 0);
+        assert_eq!(Square::F7.file(), 5);
+        assert_eq!(Square::E4.file(), 4);
+        assert_eq!(Square::C1.file(), 2);
     }
 }
