@@ -25,6 +25,10 @@ impl Bitboard {
         &self.0 == &0
     }
 
+    pub fn pop_count(&self) -> u32 {
+        self.0.count_ones()
+    }
+
     pub fn nort_one(&self) -> Bitboard {
         Self(&self.0 >> 8)
     }
@@ -39,6 +43,10 @@ impl Bitboard {
 
     pub fn west_one(&self) -> Bitboard {
         Self(&self.0 >> 1) & !Self::H_FILE
+    }
+
+    pub const fn index(&self) -> usize {
+        self.0.ilog2() as usize
     }
 
     pub fn rank(&self) -> u64 {

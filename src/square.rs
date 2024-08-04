@@ -10,7 +10,6 @@
 //! 2   48 49 50 51 52 53 54 55
 //! 1   56 57 58 59 60 61 62 63
 //!
-//!     a  b  c  d  e  f  g  h
 
 use std::fmt;
 use super::bitboard::Bitboard;
@@ -68,6 +67,8 @@ impl fmt::Display for Square {
 
 #[allow(dead_code)]
 impl Square {
+    pub const NUM: usize = 64;
+
     pub const A8: Square = Self(0);
     pub const B8: Square = Self(1);
     pub const C8: Square = Self(2);

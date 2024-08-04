@@ -1,5 +1,6 @@
 use crate::bitboard::Bitboard;
 
+#[inline(always)]
 pub fn p_gen_shift(
     orig: Bitboard,
     is_white: bool,
