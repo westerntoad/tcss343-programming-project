@@ -10,7 +10,9 @@ use crate::gen::{
     knight::*,
     king::*,
     pawn::*,
+    bishop,
     bishop::*,
+    rook,
     rook::*,
     queen::*
 };
@@ -81,6 +83,45 @@ fn print_rook_masks() {
     }
 }
 
+fn print_bishop_masks() {
+    for i in 0..64 {
+        let sq = Square::new(i).unwrap();
+        let attacks = {
+            let orig = sq.bb();
+            let mut attacks = Bitboard::EMPTY;
+
+            let mut idx = orig.nort_one().east_one();
+            while !idx.nort_one().east_one().is_empty() {
+                attacks |= idx;
+                idx = idx.nort_one().east_one();
+            }
+
+            idx = orig.sout_one().east_one();
+            while !idx.sout_one().east_one().is_empty() {
+                attacks |= idx;
+                idx = idx.sout_one().east_one();
+            }
+
+            idx = orig.sout_one().west_one();
+            while !idx.sout_one().west_one().is_empty() {
+                attacks |= idx;
+                idx = idx.sout_one().west_one();
+            }
+
+            idx = orig.nort_one().west_one();
+            while !idx.nort_one().west_one().is_empty() {
+                attacks |= idx;
+                idx = idx.nort_one().west_one();
+            }
+
+            attacks
+
+        };
+        let code = format!("{:#016x}", attacks.val());
+        println!("    Bitboard::new({code}),");
+    }
+}
+
 
 pub fn get_all_rook_magics() -> (String, String){
     let mut magic_str = String::new();
@@ -91,7 +132,7 @@ pub fn get_all_rook_magics() -> (String, String){
     
     for i in 0..Square::NUM {
         let bb = Square::new(i.try_into().unwrap()).unwrap().bb();
-        let index_bits = MASK[bb.index()].pop_count() as u8;
+        let index_bits = rook::MASK[bb.index()].pop_count() as u8;
         let (magic_entry, vec) = find_rook_magic(bb, index_bits);
 
         magic_str.push_str(&format!(
@@ -128,8 +169,8 @@ pub fn get_all_rook_magics() -> (String, String){
 
 
 fn main() {
-    //init_rook_magics();
     init_rook_moves();
+    init_bishop_moves();
     /* 
     let origin = Bitboard::E4;
     let index_bits = MASK[origin.index()].pop_count() as u8;
@@ -156,8 +197,9 @@ fn main() {
         }
     }*/
 
-    let bb = Bitboard::E4;
-    let blockers = Bitboard::A1 | Bitboard::E6;
-    println!("{:#?}", r_gen_magic(bb, blockers, Bitboard::EMPTY));
+    //let bb = Bitboard::E4;
+    //let blockers = Bitboard::C6;
+
+    //println!("{:#?}", b_gen_shift_2_helper(bb, blockers));
 }
 
