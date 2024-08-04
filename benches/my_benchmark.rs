@@ -316,6 +316,13 @@ pub fn bench_bishops(c: &mut Criterion) {
 }
 
 
-criterion_group!(benches, bench_knights, bench_kings);
+criterion_group!(
+    benches,
+    bench_knights,
+    bench_kings,
+    bench_pawns,
+    bench_rooks,
+    bench_bishops
+);
 criterion_main!(benches); 
 
