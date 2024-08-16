@@ -201,5 +201,9 @@ fn main() {
     //let blockers = Bitboard::C6;
 
     //println!("{:#?}", b_gen_shift_2_helper(bb, blockers));
+
+    println!("{:?}", Bitboard::E4);
+    println!("\n\nmask:{:?}", rook::MASK[Bitboard::E4.index()]);
+    println!("\n\nblockers:{:?}", Bitboard::B4 | Bitboard::D4 | Bitboard::E6 | Bitboard::E2 | Bitboard::C7 | Bitboard::D3 | Bitboard::B1 | Bitboard::H4 | Bitboard::G6);
 }
 
