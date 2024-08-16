@@ -28,7 +28,13 @@ use move_gen_analysis::gen::{
         b_gen_shift_1,
         b_gen_shift_2,
         b_gen_magic
+    },
+    queen::{
+        q_gen_shift_1,
+        q_gen_shift_2,
+        q_gen_magic
     }
+
 };
 
 
@@ -315,14 +321,101 @@ pub fn bench_bishops(c: &mut Criterion) {
     group.finish()
 }
 
+pub fn bench_queens(c: &mut Criterion) {
+    init_rook_moves();
+    init_bishop_moves();
+    let mut group = c.benchmark_group("Queen");
+    
+    let mut orig = Bitboard::H8;
+    let mut friend = Bitboard::EMPTY;
+    let mut enemy = Bitboard::EMPTY;
+    let mut input = (orig, friend, enemy);
+    let mut category = "Corner";
+    group.bench_with_input(BenchmarkId::new("Shift-DoubleBlock", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_shift_1(*o, *f, *e)));
+    group.bench_with_input(BenchmarkId::new("Shift-SingleBlock", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_shift_2(*o, *f, *e)));
+    group.bench_with_input(BenchmarkId::new("MagicLookup", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_magic(*o, *f, *e)));
+    
+    orig = Square::A1.bb();
+    friend = Square::F6.bb() | Square::C4.bb() | Square::F1.bb() | Square::C3.bb();
+    enemy = Square::A5.bb() | Square::A6.bb() | Square::H1.bb() | Square::C6.bb();
+    input = (orig, friend, enemy);
+    category = "CornerPopulated";
+    group.bench_with_input(BenchmarkId::new("Shift-DoubleBlock", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_shift_1(*o, *f, *e)));
+    group.bench_with_input(BenchmarkId::new("Shift-SingleBlock", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_shift_2(*o, *f, *e)));
+    group.bench_with_input(BenchmarkId::new("MagicLookup", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_magic(*o, *f, *e)));
+
+    orig = Bitboard::H4;
+    friend = Bitboard::EMPTY;
+    enemy = Bitboard::EMPTY;
+    input = (orig, friend, enemy);
+    category = "Edge";
+    group.bench_with_input(BenchmarkId::new("Shift-DoubleBlock", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_shift_1(*o, *f, *e)));
+    group.bench_with_input(BenchmarkId::new("Shift-SingleBlock", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_shift_2(*o, *f, *e)));
+    group.bench_with_input(BenchmarkId::new("MagicLookup", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_magic(*o, *f, *e)));
+    
+    orig = Bitboard::H4;
+    friend = Bitboard::H1 | Bitboard::F6 | Bitboard::H6;
+    enemy = Bitboard::E1 | Bitboard::A1 | Bitboard::B3 | Bitboard::E3;
+    input = (orig, friend, enemy);
+    category = "EdgePopulated";
+    group.bench_with_input(BenchmarkId::new("Shift-DoubleBlock", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_shift_1(*o, *f, *e)));
+    group.bench_with_input(BenchmarkId::new("Shift-SingleBlock", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_shift_2(*o, *f, *e)));
+    group.bench_with_input(BenchmarkId::new("MagicLookup", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_magic(*o, *f, *e)));
+
+    orig = Bitboard::E5;
+    friend = Bitboard::EMPTY;
+    enemy = Bitboard::EMPTY;
+    input = (orig, friend, enemy);
+    category = "Center";
+    group.bench_with_input(BenchmarkId::new("Shift-DoubleBlock", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_shift_1(*o, *f, *e)));
+    group.bench_with_input(BenchmarkId::new("Shift-SingleBlock", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_shift_2(*o, *f, *e)));
+    group.bench_with_input(BenchmarkId::new("MagicLookup", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_magic(*o, *f, *e)));
+     
+
+    orig = Square::F5.bb();
+    friend = Square::E4.bb() | Square::H7.bb() | Square::G6.bb() | Bitboard::D4 | Bitboard::G5 | Bitboard::C4;
+    enemy = Square::D3.bb() | Square::C8.bb() | Square::B5.bb() | Square::C2.bb() | Bitboard::D8 | Bitboard::A5 | Bitboard::C3;
+    input = (orig, friend, enemy);
+    category = "CenterPopulated";
+    group.bench_with_input(BenchmarkId::new("Shift-DoubleBlock", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_shift_1(*o, *f, *e)));
+    group.bench_with_input(BenchmarkId::new("Shift-SingleBlock", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_shift_2(*o, *f, *e)));
+    group.bench_with_input(BenchmarkId::new("MagicLookup", category), &input,
+        |b, (o, f, e)| b.iter(|| q_gen_magic(*o, *f, *e)));
+    
+
+    group.finish()
+}
+
+
+
+
+
 
 criterion_group!(
     benches,
-    bench_knights,
-    bench_kings,
-    bench_pawns,
-    bench_rooks,
-    bench_bishops
+    bench_knights//,
+    //bench_kings,
+    //bench_pawns,
+    //bench_rooks,
+    //bench_bishops,
+    //bench_queens
 );
 criterion_main!(benches); 
 
